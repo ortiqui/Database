@@ -97,6 +97,18 @@ namespace Database.Core
             this.connectionStringBuilder.ConnectionString = connectionString;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DatabaseCore" /> class.
+        /// </summary>
+        /// <param name="connectionString">The connection string.</param>
+        protected DatabaseCore(DbProviderNameLoader providerNameLoader, DbConnectionStringLoader connectionStringLoader)
+        {
+            this.providerFactory = DbProviderFactoryProvider.GetDbProviderFactory(providerNameLoader(), useAtrributeInfo: UseAttributeInfo);
+            this.providerName = DbProviderFactoryProvider.GetProviderType(this.providerFactory).GetAttributeValue<ProviderAttribute>(p => p.Name)?.ToString();
+            this.connectionStringBuilder = this.providerFactory.CreateConnectionStringBuilder() ?? throw new ArgumentNullException(nameof(this.connectionStringBuilder));
+            this.connectionStringBuilder.ConnectionString = connectionStringLoader();
+        }
+
         #endregion
 
         #region Propiedades

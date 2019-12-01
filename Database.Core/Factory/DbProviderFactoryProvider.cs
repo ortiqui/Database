@@ -129,6 +129,7 @@ namespace Database.Core.Factory
              Oracle DB by Data Source substring, then tell the 
              difference between MySql and SQL Server by string 
              Uid and User Id respectively and so on.*/
+
         }
 
         public static DataProviderType GetProviderType(DbProviderFactory providerFactory)
