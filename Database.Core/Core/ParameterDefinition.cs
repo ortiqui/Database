@@ -19,7 +19,9 @@
 
         public object Value { get; private set; }
 
-        public DbType Type => DatabaseCore.DbTypes[Value.GetType()];
+        public DbType Type => Value != null && Value != DBNull.Value
+            ? DatabaseCore.DbTypes[Value.GetType()]
+            : DbType.Object;
 
         public ParameterDirection Direction { get; set; }
     }

@@ -125,11 +125,35 @@ namespace Database.Core.Factory
 
         public static DbProviderFactory GetDbProviderFactory(string connectionString, bool useAtrributeInfo)
         {
-            /*From these examples you can say that you can define
-             Oracle DB by Data Source substring, then tell the 
-             difference between MySql and SQL Server by string 
-             Uid and User Id respectively and so on.*/
+            if (connectionString == null) throw new ArgumentNullException(nameof(connectionString));
 
+            if (useAtrributeInfo)
+            {
+                throw new NotSupportedException("Attribute-based resolution from connection string is not implemented.");
+            }
+
+            if (connectionString.IndexOf("User Id", StringComparison.OrdinalIgnoreCase) >= 0)
+                return SqlClientFactory.Instance;
+
+            if (connectionString.IndexOf("Uid", StringComparison.OrdinalIgnoreCase) >= 0)
+                return MySqlClientFactory.Instance;
+
+            if (connectionString.IndexOf("Host", StringComparison.OrdinalIgnoreCase) >= 0
+                && connectionString.IndexOf("Database", StringComparison.OrdinalIgnoreCase) >= 0)
+                return NpgsqlFactory.Instance;
+
+            if (connectionString.IndexOf("Data Source", StringComparison.OrdinalIgnoreCase) >= 0
+                && connectionString.IndexOf("Version", StringComparison.OrdinalIgnoreCase) >= 0)
+                return SQLiteFactory.Instance;
+
+            if (connectionString.IndexOf("Provider", StringComparison.OrdinalIgnoreCase) >= 0)
+                return OleDbFactory.Instance;
+
+            if (connectionString.IndexOf("Data Source", StringComparison.OrdinalIgnoreCase) >= 0
+                && connectionString.IndexOf("Provider", StringComparison.OrdinalIgnoreCase) < 0)
+                return OracleClientFactory.Instance;
+
+            throw new NotSupportedException($"Cannot determine provider type from connection string.");
         }
 
         public static DataProviderType GetProviderType(DbProviderFactory providerFactory)

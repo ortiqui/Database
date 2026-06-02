@@ -67,7 +67,7 @@ namespace LambdaSql
             params Expression<Func<TEntity, object>>[] fields)
         {
             if (alias == null)
-                MetadataProvider.AliasFor<TEntity>();
+                alias = MetadataProvider.AliasFor<TEntity>();
             return AddFields(alias, fields);
         }
 
@@ -104,7 +104,7 @@ namespace LambdaSql
             params Expression<Func<TEntity, object>>[] fields)
         {
             if (alias == null)
-                MetadataProvider.AliasFor<TEntity>();
+                alias = MetadataProvider.AliasFor<TEntity>();
             return GroupBy(alias, fields);
         }
 
@@ -141,7 +141,7 @@ namespace LambdaSql
             params Expression<Func<TEntity, object>>[] fields)
         {
             if (alias == null)
-                MetadataProvider.AliasFor<TEntity>();
+                alias = MetadataProvider.AliasFor<TEntity>();
             return OrderBy(alias, fields);
         }
 
@@ -179,7 +179,7 @@ namespace LambdaSql
             if (condition == null) throw new ArgumentNullException(nameof(condition));
             if (leftAlias == null)
                 leftAlias = MetadataProvider.AliasFor<TLeft>();
-            if (leftAlias == null)
+            if (joinAlias == null)
                 joinAlias = MetadataProvider.AliasFor<TJoin>();
 
             return LeftJoin(GetJoinFilter(condition.Body as BinaryExpression, leftAlias, joinAlias), joinAlias);
